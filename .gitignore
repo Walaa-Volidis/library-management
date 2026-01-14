@@ -1,0 +1,19 @@
+# Environments
+venv/
+env/
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Databases (if you have local sqlite)
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+.github/
+.vscode/
+.devcontainer/

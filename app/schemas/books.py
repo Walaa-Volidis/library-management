@@ -20,7 +20,7 @@ class BookUpdate(BaseModel):
     total_copies: Optional[int] = Field(None, example=5, gt=0)
 
 class BookResponse(BookBase):
-    id: UUID
+    id: int
     available_copies: int
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)

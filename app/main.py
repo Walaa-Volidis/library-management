@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.api.book import router as books_router
 from app.api.member import router as members_router
+from app.api.borrow import router as borrows_router
 
 app = FastAPI(title="Library API")
 
@@ -11,3 +12,4 @@ def root():
 
 app.include_router(books_router)
 app.include_router(members_router)
+app.include_router(borrows_router)

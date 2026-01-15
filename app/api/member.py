@@ -20,6 +20,9 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.post("/", response_model=schemas.MemberResponse)
 def create_member(member_in: schemas.MemberCreate, db: db_dependency):
+    existing_member = db.query(models.member.Member).filter(models.member.Member.email == member_in.email).first()
+    if existing_member:
+        raise HTTPException(status_code=409, detail="Email already registered")
     member_data = member_in.model_dump()
     db_member = models.member.Member(**member_data)    
     db.add(db_member)

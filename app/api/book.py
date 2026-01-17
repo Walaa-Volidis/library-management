@@ -19,7 +19,7 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.post("/", response_model=schemas.BookResponse)
-def create_book(book_in: schemas.BookCreate, db: Session = Depends(get_db)):
+def create_book(book_in: schemas.BookCreate, db: db_dependency):
     book_data = book_in.model_dump() 
     db_book = models.book.Book(
         **book_data, 
@@ -34,13 +34,14 @@ def create_book(book_in: schemas.BookCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=List[schemas.BookResponse])
 def get_all_books(db: db_dependency, author: str = None, title: str = None, available_only: bool = None):
+    query = db.query(models.book.Book)
     if author:
-        return db.query(models.book.Book).filter(models.book.Book.author.ilike(f"%{author}%")).all()
+        query = query.filter(models.book.Book.author.ilike(f"%{author}%"))
     if title:
-        return db.query(models.book.Book).filter(models.book.Book.title.ilike(f"%{title}%")).all()
+        query = query.filter(models.book.Book.title.ilike(f"%{title}%"))
     if available_only:
-        return db.query(models.book.Book).filter(models.book.Book.available_copies > 0).all()
-    return db.query(models.book.Book).all() 
+        query = query.filter(models.book.Book.available_copies > 0)
+    return query.all() 
 
 
 @router.delete("/{book_id}", response_model=schemas.BookResponse)

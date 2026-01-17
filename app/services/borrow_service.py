@@ -36,8 +36,9 @@ class BorrowService:
 
         db_borrow.returned_at = return_in.return_date
         db_book = db.query(models.book.Book).filter(models.book.Book.id == db_borrow.book_id).first()
-        if db_book:
-            db_book.available_copies += 1
+        if not db_book:  
+            raise HTTPException(status_code=404, detail="Book not found")  
+        db_book.available_copies += 1
         db.commit()
         db.refresh(db_borrow)
         return db_borrow

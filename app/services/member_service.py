@@ -16,8 +16,8 @@ class MemberService:
         return db_member
     
     @staticmethod
-    def get_all(db: Session):
-        return db.query(models.member.Member).all()
+    def get_all(db: Session, skip: int = 0, limit: int = 10):
+        return db.query(models.member.Member).offset(skip).limit(limit).all()
 
     @staticmethod
     def get_one(db: Session, member_id: int):

@@ -24,8 +24,8 @@ def create_member(member_in: schemas.MemberCreate, db: db_dependency):
     return MemberService.create(db, member_in)
 
 @router.get("/", response_model=List[schemas.MemberResponse])
-def get_all_members(db: db_dependency):
-    return MemberService.get_all(db)
+def get_all_members(db: db_dependency, skip: int = 0, limit: int = 10):
+    return MemberService.get_all(db, skip, limit)
 
 @router.get("/{member_id}", response_model=schemas.MemberResponse)
 def get_member(member_id: int, db: db_dependency):

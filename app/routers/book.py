@@ -24,8 +24,8 @@ def create_book(book_in: schemas.BookCreate, db: db_dependency):
     return BookService.create(db, book_in)
 
 @router.get("/", response_model=List[schemas.BookResponse])
-def get_all_books(db: db_dependency, author: str = None, title: str = None, available_only: bool = None):
-    return BookService.get_all(db, author, title, available_only)
+def get_all_books(db: db_dependency, author: str = None, title: str = None, available_only: bool = None, skip: int = 0, limit: int = 10):
+    return BookService.get_all(db, author, title, available_only, skip, limit)
 
 @router.get("/{book_id}", response_model=schemas.BookResponse)
 def get_book(book_id: int, db: db_dependency):

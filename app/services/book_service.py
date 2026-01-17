@@ -16,7 +16,7 @@ class BookService:
         return db_book
 
     @staticmethod
-    def get_all(db: Session, author: str = None, title: str = None, available_only: bool = None):
+    def get_all(db: Session, author: str = None, title: str = None, available_only: bool = None, skip: int = 0, limit: int = 10):
         query = db.query(models.book.Book)
         if author:
             query = query.filter(models.book.Book.author.ilike(f"%{author}%"))
@@ -24,7 +24,7 @@ class BookService:
             query = query.filter(models.book.Book.title.ilike(f"%{title}%"))
         if available_only:
             query = query.filter(models.book.Book.available_copies > 0)
-        return query.all()
+        return query.offset(skip).limit(limit).all()
 
     @staticmethod
     def get_one(db: Session, book_id: int):

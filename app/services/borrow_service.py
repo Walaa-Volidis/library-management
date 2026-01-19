@@ -13,6 +13,15 @@ class BorrowService:
         db_member = db.query(models.member.Member).filter(models.member.Member.id == borrow_in.member_id).first()
         if not db_member:
             raise HTTPException(status_code=404, detail="Member not found")
+        
+        # Check borrow limit (max 3 active borrows per member)
+        active_borrows = db.query(models.borrow.BorrowRecord).filter(
+            models.borrow.BorrowRecord.member_id == borrow_in.member_id,
+            models.borrow.BorrowRecord.returned_at == None
+        ).count()
+        if active_borrows >= 3:
+            raise HTTPException(status_code=400, detail="Member has reached the maximum borrow limit of 3 books")
+        
         db_book.available_copies -= 1
         due_date = datetime.now() + timedelta(days=14)
         new_record = models.borrow.BorrowRecord(

@@ -11,6 +11,7 @@ from app.database import Base
 from app.models.book import Book
 from app.models.member import Member
 from app.models.borrow import BorrowRecord
+from app.models.users import Users
 
 config = context.config
 

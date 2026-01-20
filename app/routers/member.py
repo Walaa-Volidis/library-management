@@ -1,26 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import Annotated, List
-from app import schemas, models
-from app.database import SessionLocal
+from typing import List
+
+from fastapi import APIRouter
+
+from app import schemas
+from app.dependencies import db_dependency, user_dependency
 from app.services.member_service import MemberService
 
-router = APIRouter(
-    prefix="/members",
-    tags=["Members"]
-)
+router = APIRouter(prefix="/members", tags=["Members"])
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-db_dependency = Annotated[Session, Depends(get_db)]
 
 @router.post("/", response_model=schemas.MemberResponse)
-def create_member(member_in: schemas.MemberCreate, db: db_dependency):
+def create_member(
+    member_in: schemas.MemberCreate,
+    db: db_dependency,
+    current_user: user_dependency
+):
     return MemberService.create(db, member_in)
 
 @router.get("/", response_model=List[schemas.MemberResponse])
@@ -32,5 +26,9 @@ def get_member(member_id: int, db: db_dependency):
     return MemberService.get_one(db, member_id)
 
 @router.delete("/{member_id}")
-def delete_member(member_id: int, db: db_dependency):
+def delete_member(
+    member_id: int,
+    db: db_dependency,
+    current_user: user_dependency
+):
     return MemberService.delete(db, member_id)

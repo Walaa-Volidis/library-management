@@ -10,7 +10,7 @@ services:
       - .:/app
     depends_on:
       db:
-        condition: service_healthy # لن يبدأ الـ API إلا بعد نجاح الـ Healthcheck
+        condition: service_healthy
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/library_db
 

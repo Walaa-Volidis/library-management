@@ -20,7 +20,7 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_bearer =Annotated[OAuth2PasswordRequestForm, Depends()]
 
 def get_db():
     db = SessionLocal()
@@ -34,3 +34,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register(user_details: users.CreateUserRequest, db: db_dependency):
     return AuthService.create_user(db, user_details)
+
+@router.post("/token", response_model=users.Token)
+def login(form_data: oauth2_bearer, db: db_dependency):
+    return AuthService.login_user(db, form_data.username, form_data.password, SECRET_KEY, ALGORITHM)
